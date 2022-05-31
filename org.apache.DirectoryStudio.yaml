@@ -1,0 +1,61 @@
+id: org.apache.DirectoryStudio
+runtime: org.gnome.Platform
+runtime-version: "42"
+sdk: org.gnome.Sdk
+sdk-extensions:
+  - org.freedesktop.Sdk.Extension.openjdk11
+command: apachedirectorystudio
+finish-args:
+  - --share=network
+  - --share=ipc
+  - --socket=x11
+  - --socket=wayland
+  - --device=dri
+  - --env=PATH=/usr/bin:/app/bin:/app/jre/bin
+  - --filesystem=~/.ApacheDirectoryStudio:create
+modules:
+  - name: openjdk
+    buildsystem: simple
+    build-commands:
+      - /usr/lib/sdk/openjdk11/install.sh
+  - name: studio
+    buildsystem: simple
+    build-commands:
+      - mv ApacheDirectoryStudio /app/ApacheDirectoryStudio
+      - mkdir /app/bin
+      - ln -s /app/ApacheDirectoryStudio/ApacheDirectoryStudio /app/bin/apachedirectorystudio
+      # Using environment variables inside the config is not enabled :(
+      # https://directory.apache.org/studio/faqs.html#location-of-apache-directory-studio-settings
+      # - sed -i 's|@user.home/.ApacheDirectoryStudio|$XDG_CONFIG_DIR/ApacheDirectoryStudio|' configuration/config.ini
+      - install -Dm 644 apachedirectorystudio.desktop /app/share/applications/${FLATPAK_ID}.desktop
+      - install -Dm 644 org.apache.DirectoryStudio.appdata.xml /app/share/metainfo/${FLATPAK_ID}.appdata.xml
+      - install -Dm 644 studio_16x16.png /app/share/icons/hicolor/16x16/apps/${FLATPAK_ID}.png
+      - install -Dm 644 studio_32x32.png /app/share/icons/hicolor/32x32/apps/${FLATPAK_ID}.png
+      - install -Dm 644 studio_48x48.png /app/share/icons/hicolor/48x48/apps/${FLATPAK_ID}.png
+      - install -Dm 644 studio_64x64.png /app/share/icons/hicolor/64x64/apps/${FLATPAK_ID}.png
+      - install -Dm 644 studio_128x128.png /app/share/icons/hicolor/128x128/apps/${FLATPAK_ID}.png
+    sources:
+      - type: archive
+        url: https://downloads.apache.org/directory/studio/2.0.0.v20210213-M16/ApacheDirectoryStudio-2.0.0.v20210213-M16-linux.gtk.x86_64.tar.gz
+        sha256: 6292ee07e8dad3022bae27768392b44397ac7f4cdae606518f0a3afc932b6bec
+        strip-components: 0
+      - type: file
+        url: https://raw.githubusercontent.com/apache/directory-studio/9f92542b3f5f4bd64ccf89ec6159f04c66eba17f/tools/Debian%20Package/package/usr/share/applications/apachedirectorystudio.desktop
+        sha256: 7543388e2bc6b505512e685d87357ac82e100931a9de4203b67afe461eb3984d
+      - type: file
+        path: org.apache.DirectoryStudio.appdata.xml
+      - type: file
+        url: https://raw.githubusercontent.com/apache/directory-studio/9f92542b3f5f4bd64ccf89ec6159f04c66eba17f/product/icons/window/studio_16x16.png
+        sha256: 7240ace2ee6554c5b5b969f90e8ee11ca2eb9e53fafb55b20afcd56b02cbf9e8
+      - type: file
+        url: https://raw.githubusercontent.com/apache/directory-studio/9f92542b3f5f4bd64ccf89ec6159f04c66eba17f/product/icons/window/studio_32x32.png
+        sha256: 95e49f67df1a7a569812b10b392068517ad079f8dbe5636e4afa8fabd48cd0cd
+      - type: file
+        url: https://raw.githubusercontent.com/apache/directory-studio/9f92542b3f5f4bd64ccf89ec6159f04c66eba17f/product/icons/window/studio_48x48.png
+        sha256: 5e14c91086358df5f27a6d11e82030d15fe6a03d888e6a00ad82845d130b82be
+      - type: file
+        url: https://raw.githubusercontent.com/apache/directory-studio/9f92542b3f5f4bd64ccf89ec6159f04c66eba17f/product/icons/window/studio_64x64.png
+        sha256: 71db33e171840eaaaa159407b9dca60a5e6fd0e3eb4334322b0a4e9d2607790d
+      - type: file
+        url: https://raw.githubusercontent.com/apache/directory-studio/9f92542b3f5f4bd64ccf89ec6159f04c66eba17f/product/icons/window/studio_128x128.png
+        sha256: b6115a1f578aa11938da505ad50e5326d1bc9a7267d03990d1aa6ca1dd63a967
